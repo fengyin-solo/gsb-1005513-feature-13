@@ -33,3 +33,24 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .link { border: none; background: none; color: var(--brand); cursor: pointer; padding: 0; }
 .page-foot { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted); }
 .error-text { color: #b42318; }
+.ok-text { color: #067647; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+.tab { border: none; background: none; padding: 8px 16px; cursor: pointer; font-size: 14px; color: var(--muted); border-bottom: 2px solid transparent; }
+.tab.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+
+.modal-mask { position: fixed; inset: 0; background: rgba(16, 24, 40, 0.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+.modal { background: #fff; border-radius: 10px; padding: 20px 24px; width: 460px; max-height: 86vh; overflow: auto; }
+.modal.wide-modal { width: 680px; }
+.modal h3 { margin: 0 0 10px; }
+.modal .filter-item { margin-bottom: 12px; }
+.modal .filter-item input, .modal .filter-item textarea, .modal .filter-item select,
+.caliber-panel input, .caliber-panel select { width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font: inherit; }
+.modal-actions { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+.link.danger { color: #b42318; }
+.check { display: inline-flex; align-items: center; gap: 4px; margin-right: 14px; font-size: 13px; }
+
+.caliber-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+.caliber-panel h3 { margin: 0 0 12px; font-size: 15px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-bottom: 10px; }
+.form-grid .wide { grid-column: 1 / -1; }

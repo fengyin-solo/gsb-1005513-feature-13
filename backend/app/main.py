@@ -5,14 +5,36 @@
 """
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.routers import ROUTERS
+from app.services import report_store as report_db
+from app.services.report import ReportService
+from app.services.report_caliber import CaliberParams
 from app.store import store
 
-app = FastAPI(title="光伏电站运维管理平台", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    """启动时为月报模块建表、落默认口径 v1，并把存量月报按统计月份回填重算。
+
+    回填只在月报库为空时发生；之后所有月报数字都以数据库为准，重启不回退。
+    """
+    report_db.init_db()
+    if not report_db.list_calibers():
+        report_db.create_caliber(
+            CaliberParams().to_dict(),
+            "初始口径：关口表计电量、峰值日照小时PR、告警+缺陷折算停机",
+        )
+    ReportService().backfill_legacy(store.rows("report"))
+    yield
+
+
+app = FastAPI(title="光伏电站运维管理平台", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

@@ -74,3 +74,22 @@ npm run dev
   `backend/app/routers/<模块>.py`，业务规则在 `backend/app/services/<模块>.py`。
 - 列表接口统一返回 `{ items, total, page, size }`，动作接口统一返回 `{ ok, message }`。
 - 状态流转只允许在 `app/services` 里改，路由层不做业务判断。
+
+## 运行月报
+
+- 发电量、等效利用小时、综合效率PR、设备可利用率均由各模块明细自动汇总，
+  公式只有一份：`backend/app/services/report_caliber.py`。
+- 月报落 SQLite（`backend/data/report.db`，可用 `REPORT_DB_PATH` 覆盖）：
+  重算结果整体覆盖写库，刷新或重启读到的就是最后一次重算结果。
+- 口径版本化调整（`POST /api/report/calibers`）：发布后所有未归档月报自动按
+  新口径重算；已归档月报冻结归档时的口径版本，归档详情与月报列表读同一份落库数据。
+- 状态机：草稿 → 已复核 → 已归档。归档后复核/重算拒绝；已复核再次复核退回草稿；
+  复核结论随归档快照写入归档台账（`report_archive`）。
+- 按统计月份唯一：同月重复提交只留最新一版（版本号 +1、回草稿），已归档月份拒绝覆盖；
+  存量月报首次启动时按统计月份回填，同月只留最新。
+
+### 测试
+
+```bash
+cd backend && .venv/bin/python -m unittest discover -s tests
+```
